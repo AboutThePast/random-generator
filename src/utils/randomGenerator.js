@@ -1,23 +1,27 @@
 /**
- * 根据基准值生成随机数
+ * 根据基准值和规则生成随机数
  * @param {number} baseValue - 基准值（如 19.368）
  * @param {number} count - 生成数量
+ * @param {number} fixedDigits - 小数部分固定位数（默认 2）
+ * @param {number} varyRange - 最后一位变动范围（默认 1，即±1）
+ * @param {number} randomDigits - 随机生成位数（默认 5）
  * @returns {string[]} 生成的随机数数组
  */
-export function generateRandomNumbers(baseValue, count) {
-  const strVal = baseValue.toFixed(3);
+export function generateRandomNumbers(baseValue, count, fixedDigits = 2, varyRange = 1, randomDigits = 5) {
+  const strVal = baseValue.toFixed(fixedDigits + 1);
   const [intPart, decimalPart] = strVal.split('.');
-  const decimal2 = decimalPart.substring(0, 2);
-  const decimal3 = parseInt(decimalPart[2]);
+  const fixedPart = decimalPart.substring(0, fixedDigits);
+  const lastDigit = parseInt(decimalPart[fixedDigits]);
 
-  const minThird = Math.max(0, decimal3 - 1);
-  const maxThird = Math.min(9, decimal3 + 1);
+  const minDigit = Math.max(0, lastDigit - varyRange);
+  const maxDigit = Math.min(9, lastDigit + varyRange);
 
   const results = [];
   for (let i = 0; i < count; i++) {
-    const thirdDigit = Math.floor(Math.random() * (maxThird - minThird + 1)) + minThird;
-    const last5Digits = Math.floor(Math.random() * 100000);
-    const fullValue = `${intPart}.${decimal2}${thirdDigit}${last5Digits.toString().padStart(5, '0')}`;
+    const varyDigit = Math.floor(Math.random() * (maxDigit - minDigit + 1)) + minDigit;
+    const randomPart = Math.floor(Math.random() * Math.pow(10, randomDigits));
+    const randomPartStr = randomPart.toString().padStart(randomDigits, '0');
+    const fullValue = `${intPart}.${fixedPart}${varyDigit}${randomPartStr}`;
     results.push(fullValue);
   }
 
@@ -28,12 +32,15 @@ export function generateRandomNumbers(baseValue, count) {
  * 生成多组数据
  * @param {number[]} baseValues - 基准值数组
  * @param {number} countPerGroup - 每组生成数量
+ * @param {number} fixedDigits - 小数部分固定位数
+ * @param {number} varyRange - 最后一位变动范围
+ * @param {number} randomDigits - 随机生成位数
  * @returns {Object[]} 每组数据的结果
  */
-export function generateMultipleGroups(baseValues, countPerGroup) {
+export function generateMultipleGroups(baseValues, countPerGroup, fixedDigits, varyRange, randomDigits) {
   return baseValues.map(baseValue => ({
     baseValue,
-    numbers: generateRandomNumbers(baseValue, countPerGroup)
+    numbers: generateRandomNumbers(baseValue, countPerGroup, fixedDigits, varyRange, randomDigits)
   }));
 }
 

@@ -4,6 +4,9 @@ import { generateMultipleGroups, formatToTxt, downloadTxt } from './utils/random
 
 const baseValuesInput = ref('19.368,18.292')
 const countPerGroup = ref(30)
+const fixedDigits = ref(2)
+const varyRange = ref(1)
+const randomDigits = ref(5)
 const isGenerating = ref(false)
 
 function handleGenerate() {
@@ -26,7 +29,26 @@ function handleGenerate() {
       return
     }
 
-    const results = generateMultipleGroups(baseValues, count)
+    const fixed = parseInt(fixedDigits.value)
+    const vary = parseInt(varyRange.value)
+    const random = parseInt(randomDigits.value)
+
+    if (isNaN(fixed) || fixed < 0) {
+      alert('请输入有效的固定位数')
+      return
+    }
+
+    if (isNaN(vary) || vary <= 0) {
+      alert('请输入有效的变动范围')
+      return
+    }
+
+    if (isNaN(random) || random <= 0) {
+      alert('请输入有效的生成位数')
+      return
+    }
+
+    const results = generateMultipleGroups(baseValues, count, fixed, vary, random)
     const txtContent = formatToTxt(results)
     downloadTxt(txtContent)
   } catch (error) {
@@ -59,7 +81,7 @@ function handleGenerate() {
           </svg>
         </div>
         <h1>随机数生成器</h1>
-        <p class="subtitle">生成符合规则的随机数</p>
+        <p class="subtitle">自定义规则生成随机数</p>
       </div>
 
       <div class="card-body">
@@ -102,6 +124,68 @@ function handleGenerate() {
           </div>
         </div>
 
+        <div class="form-row">
+          <div class="form-group half">
+            <label for="fixedDigits">
+              <svg class="label-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+              </svg>
+              固定位数
+            </label>
+            <input
+              id="fixedDigits"
+              v-model.number="fixedDigits"
+              type="number"
+              min="0"
+              max="10"
+              class="input-field"
+            />
+            <span class="hint">小数前几位固定</span>
+          </div>
+
+          <div class="form-group half">
+            <label for="varyRange">
+              <svg class="label-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="8" x2="12" y2="16" />
+                <line x1="8" y1="12" x2="16" y2="12" />
+              </svg>
+              变动范围
+            </label>
+            <input
+              id="varyRange"
+              v-model.number="varyRange"
+              type="number"
+              min="1"
+              max="9"
+              class="input-field"
+            />
+            <span class="hint">最后一位±几</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="randomDigits">
+            <svg class="label-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="7" width="20" height="14" rx="2" />
+              <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+            </svg>
+            生成位数
+          </label>
+          <div class="input-with-hint">
+            <input
+              id="randomDigits"
+              v-model.number="randomDigits"
+              type="number"
+              min="1"
+              max="20"
+              class="input-field"
+            />
+            <span class="range-hint">1 - 20</span>
+          </div>
+          <span class="hint">在最后一位后面生成多少位随机数</span>
+        </div>
+
         <button
           @click="handleGenerate"
           :disabled="isGenerating"
@@ -124,7 +208,7 @@ function handleGenerate() {
     </div>
 
     <footer class="footer">
-      <p>按 ±1 规则生成 · 小数第 3 位在基准值基础上 ±1 随机</p>
+      <p>生成规则：固定 {{ fixedDigits }} 位 · 最后一位±{{ varyRange }} · 后 {{ randomDigits }} 位随机</p>
     </footer>
   </div>
 </template>
@@ -208,7 +292,7 @@ function handleGenerate() {
     0 10px 20px rgba(0, 0, 0, 0.1),
     inset 0 1px 0 rgba(255, 255, 255, 0.8);
   width: 100%;
-  max-width: 440px;
+  max-width: 500px;
   overflow: hidden;
   animation: slideUp 0.6s ease-out;
   position: relative;
@@ -272,6 +356,16 @@ h1 {
 
 .form-group {
   margin-bottom: 24px;
+}
+
+.form-row {
+  display: flex;
+  gap: 16px;
+}
+
+.form-group.half {
+  flex: 1;
+  min-width: 0;
 }
 
 label {
@@ -439,6 +533,10 @@ label {
 
   .card-body {
     padding: 24px;
+  }
+
+  .form-row {
+    flex-direction: column;
   }
 
   h1 {
