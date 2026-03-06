@@ -25,20 +25,17 @@ jobs:
         with:
           node-version: 20
           cache: npm
-          cache-dependency-path: random-generator/package-lock.json
 
       - name: Install dependencies
         run: npm ci
-        working-directory: ./random-generator
 
       - name: Build
         run: npm run build
-        working-directory: ./random-generator
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./random-generator/dist
+          path: ./dist
 
   deploy:
     environment:
