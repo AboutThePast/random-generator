@@ -143,7 +143,7 @@ function handleGenerate() {
   padding: 20px;
   position: relative;
   overflow: hidden;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
 }
 
 .background-decoration {
@@ -156,7 +156,7 @@ function handleGenerate() {
 .circle {
   position: absolute;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.1);
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.08) 0%, rgba(118, 75, 162, 0.08) 100%);
   animation: float 20s infinite ease-in-out;
 }
 
@@ -229,20 +229,20 @@ function handleGenerate() {
 .card-header {
   padding: 40px 32px 24px;
   text-align: center;
-  background: linear-gradient(135deg, #f8f9ff 0%, #ffffff 100%);
-  border-bottom: 1px solid rgba(102, 126, 234, 0.1);
+  background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
+  border-bottom: 1px solid #e5e7eb;
 }
 
 .icon-wrapper {
   width: 64px;
   height: 64px;
   margin: 0 auto 16px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
   border-radius: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 8px 20px rgba(14, 165, 233, 0.25);
 }
 
 .dice-icon {
@@ -287,7 +287,7 @@ label {
 .label-icon {
   width: 18px;
   height: 18px;
-  color: #667eea;
+  color: #0ea5e9;
 }
 
 .input-field {
@@ -309,10 +309,10 @@ label {
 
 .input-field:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: #0ea5e9;
   box-shadow:
-    0 0 0 4px rgba(102, 126, 234, 0.1),
-    0 4px 12px rgba(102, 126, 234, 0.2);
+    0 0 0 4px rgba(14, 165, 233, 0.1),
+    0 4px 12px rgba(14, 165, 233, 0.15);
   transform: translateY(-1px);
 }
 
@@ -344,7 +344,7 @@ label {
 .generate-btn {
   width: 100%;
   padding: 16px 24px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
   color: white;
   border: none;
   border-radius: 12px;
@@ -354,12 +354,12 @@ label {
   position: relative;
   overflow: hidden;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3);
 }
 
 .generate-btn:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+  box-shadow: 0 8px 25px rgba(14, 165, 233, 0.4);
 }
 
 .generate-btn:active:not(:disabled) {
@@ -417,7 +417,7 @@ label {
 .footer {
   margin-top: 24px;
   text-align: center;
-  color: rgba(255, 255, 255, 0.8);
+  color: #6b7280;
   font-size: 13px;
   position: relative;
   z-index: 1;
