@@ -8,6 +8,7 @@ const fixedDigits = ref(2)
 const varyRange = ref(1)
 const randomDigits = ref(5)
 const isGenerating = ref(false)
+const showAdvanced = ref(false)
 
 function handleGenerate() {
   isGenerating.value = true
@@ -58,6 +59,10 @@ function handleGenerate() {
     isGenerating.value = false
   }
 }
+
+function toggleAdvanced() {
+  showAdvanced.value = !showAdvanced.value
+}
 </script>
 
 <template>
@@ -65,7 +70,6 @@ function handleGenerate() {
     <div class="background-decoration">
       <div class="circle circle-1"></div>
       <div class="circle circle-2"></div>
-      <div class="circle circle-3"></div>
     </div>
 
     <div class="card">
@@ -81,18 +85,12 @@ function handleGenerate() {
           </svg>
         </div>
         <h1>随机数生成器</h1>
-        <p class="subtitle">自定义规则生成随机数</p>
+        <p class="subtitle">固定{{fixedDigits}}位 · ±{{varyRange}} · 后{{randomDigits}}位</p>
       </div>
 
       <div class="card-body">
         <div class="form-group">
-          <label for="baseValues">
-            <svg class="label-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-            </svg>
-            基准值
-          </label>
+          <label for="baseValues">基准值</label>
           <input
             id="baseValues"
             v-model="baseValuesInput"
@@ -100,18 +98,11 @@ function handleGenerate() {
             placeholder="19.368,18.292"
             class="input-field"
           />
-          <span class="hint">逗号分隔，支持多个值</span>
         </div>
 
-        <div class="form-group">
-          <label for="count">
-            <svg class="label-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <line x1="12" y1="5" x2="12" y2="19" />
-              <line x1="5" y1="12" x2="19" y2="12" />
-            </svg>
-            每组生成数量
-          </label>
-          <div class="input-with-hint">
+        <div class="form-row">
+          <div class="form-group half">
+            <label for="count">生成数量</label>
             <input
               id="count"
               v-model.number="countPerGroup"
@@ -120,71 +111,66 @@ function handleGenerate() {
               max="1000"
               class="input-field"
             />
-            <span class="range-hint">1 - 1000</span>
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group half">
-            <label for="fixedDigits">
-              <svg class="label-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-              </svg>
-              固定位数
-            </label>
-            <input
-              id="fixedDigits"
-              v-model.number="fixedDigits"
-              type="number"
-              min="0"
-              max="10"
-              class="input-field"
-            />
-            <span class="hint">小数前几位固定</span>
           </div>
 
           <div class="form-group half">
-            <label for="varyRange">
-              <svg class="label-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="10" />
-                <line x1="12" y1="8" x2="12" y2="16" />
-                <line x1="8" y1="12" x2="16" y2="12" />
-              </svg>
-              变动范围
+            <label>
+              <button type="button" class="advanced-toggle" @click="toggleAdvanced">
+                <svg class="chevron" :class="{ rotated: showAdvanced }" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
+                高级规则
+              </button>
             </label>
             <input
-              id="varyRange"
-              v-model.number="varyRange"
-              type="number"
+              v-model.number="countPerGroup"
+              type="range"
               min="1"
-              max="9"
-              class="input-field"
+              max="1000"
+              class="slider-field"
             />
-            <span class="hint">最后一位±几</span>
           </div>
         </div>
 
-        <div class="form-group">
-          <label for="randomDigits">
-            <svg class="label-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <rect x="2" y="7" width="20" height="14" rx="2" />
-              <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
-            </svg>
-            生成位数
-          </label>
-          <div class="input-with-hint">
-            <input
-              id="randomDigits"
-              v-model.number="randomDigits"
-              type="number"
-              min="1"
-              max="20"
-              class="input-field"
-            />
-            <span class="range-hint">1 - 20</span>
+        <transition name="slide">
+          <div v-if="showAdvanced" class="advanced-row">
+            <div class="form-group third">
+              <label for="fixedDigits">固定位</label>
+              <input
+                id="fixedDigits"
+                v-model.number="fixedDigits"
+                type="number"
+                min="0"
+                max="10"
+                class="input-field small"
+              />
+            </div>
+
+            <div class="form-group third">
+              <label for="varyRange">±范围</label>
+              <input
+                id="varyRange"
+                v-model.number="varyRange"
+                type="number"
+                min="1"
+                max="9"
+                class="input-field small"
+              />
+            </div>
+
+            <div class="form-group third">
+              <label for="randomDigits">生成位</label>
+              <input
+                id="randomDigits"
+                v-model.number="randomDigits"
+                type="number"
+                min="1"
+                max="20"
+                class="input-field small"
+              />
+            </div>
           </div>
-          <span class="hint">在最后一位后面生成多少位随机数</span>
-        </div>
+        </transition>
 
         <button
           @click="handleGenerate"
@@ -208,7 +194,7 @@ function handleGenerate() {
     </div>
 
     <footer class="footer">
-      <p>生成规则：固定 {{ fixedDigits }} 位 · 最后一位±{{ varyRange }} · 后 {{ randomDigits }} 位随机</p>
+      <p>例：19.368 → 前 2 位固定 19.36，第 3 位±{{varyRange}}，后{{randomDigits}}位随机</p>
     </footer>
   </div>
 </template>
@@ -224,7 +210,7 @@ function handleGenerate() {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  padding: 16px;
   position: relative;
   overflow: hidden;
   background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
@@ -245,122 +231,91 @@ function handleGenerate() {
 }
 
 .circle-1 {
-  width: 300px;
-  height: 300px;
-  top: -100px;
-  right: -100px;
-  animation-delay: 0s;
+  width: 200px;
+  height: 200px;
+  top: -60px;
+  right: -60px;
 }
 
 .circle-2 {
-  width: 200px;
-  height: 200px;
-  bottom: -50px;
-  left: -50px;
-  animation-delay: -7s;
-}
-
-.circle-3 {
-  width: 150px;
-  height: 150px;
-  top: 50%;
-  left: 50%;
-  animation-delay: -14s;
+  width: 120px;
+  height: 120px;
+  bottom: -40px;
+  left: -40px;
 }
 
 @keyframes float {
-  0%, 100% {
-    transform: translate(0, 0) scale(1);
-  }
-  25% {
-    transform: translate(30px, -30px) scale(1.05);
-  }
-  50% {
-    transform: translate(-20px, 20px) scale(0.95);
-  }
-  75% {
-    transform: translate(20px, 30px) scale(1.02);
-  }
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-15px, 15px) scale(0.95); }
 }
 
 .card {
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(20px);
-  border-radius: 24px;
-  box-shadow:
-    0 25px 50px rgba(0, 0, 0, 0.2),
-    0 10px 20px rgba(0, 0, 0, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
   width: 100%;
-  max-width: 500px;
+  max-width: 400px;
   overflow: hidden;
-  animation: slideUp 0.6s ease-out;
+  animation: slideUp 0.5s ease-out;
   position: relative;
   z-index: 1;
 }
 
 @keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(25px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .card-header {
-  padding: 40px 32px 24px;
+  padding: 28px 24px 20px;
   text-align: center;
   background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
   border-bottom: 1px solid #e5e7eb;
 }
 
 .icon-wrapper {
-  width: 64px;
-  height: 64px;
-  margin: 0 auto 16px;
+  width: 52px;
+  height: 52px;
+  margin: 0 auto 12px;
   background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
-  border-radius: 16px;
+  border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 8px 20px rgba(14, 165, 233, 0.25);
+  box-shadow: 0 6px 16px rgba(14, 165, 233, 0.25);
 }
 
 .dice-icon {
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
   color: white;
 }
 
 h1 {
-  font-size: 28px;
+  font-size: 24px;
   font-weight: 700;
   color: #1a1a2e;
-  margin: 0 0 8px 0;
-  letter-spacing: -0.5px;
+  margin: 0 0 6px 0;
 }
 
 .subtitle {
-  font-size: 14px;
+  font-size: 13px;
   color: #6b7280;
   margin: 0;
-  font-weight: 400;
 }
 
 .card-body {
-  padding: 32px;
+  padding: 20px;
 }
 
 .form-group {
-  margin-bottom: 24px;
+  margin-bottom: 16px;
 }
 
 .form-row {
   display: flex;
-  gap: 16px;
+  gap: 12px;
 }
 
 .form-group.half {
@@ -368,33 +323,71 @@ h1 {
   min-width: 0;
 }
 
+.advanced-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+  padding: 14px;
+  background: #f8fafc;
+  border-radius: 12px;
+}
+
+.form-group.third {
+  flex: 1;
+  min-width: 0;
+  margin-bottom: 0;
+}
+
 label {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 14px;
+  gap: 6px;
+  font-size: 13px;
   font-weight: 600;
   color: #374151;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
-.label-icon {
-  width: 18px;
-  height: 18px;
+.advanced-toggle {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
   color: #0ea5e9;
+  padding: 0;
+}
+
+.chevron {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.2s;
+}
+
+.chevron.rotated {
+  transform: rotate(180deg);
 }
 
 .input-field {
   width: 100%;
-  padding: 14px 16px;
+  padding: 11px 12px;
   border: 2px solid #e5e7eb;
-  border-radius: 12px;
-  font-size: 16px;
+  border-radius: 10px;
+  font-size: 15px;
   font-family: inherit;
   color: #1f2937;
   background: white;
-  transition: all 0.3s ease;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  transition: all 0.25s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.input-field.small {
+  padding: 11px 8px;
+  font-size: 14px;
+  text-align: center;
 }
 
 .input-field::placeholder {
@@ -404,56 +397,49 @@ label {
 .input-field:focus {
   outline: none;
   border-color: #0ea5e9;
-  box-shadow:
-    0 0 0 4px rgba(14, 165, 233, 0.1),
-    0 4px 12px rgba(14, 165, 233, 0.15);
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1), 0 3px 10px rgba(14, 165, 233, 0.12);
   transform: translateY(-1px);
 }
 
-.input-field:hover:not(:focus) {
-  border-color: #d1d5db;
+.slider-field {
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  background: #e5e7eb;
+  outline: none;
+  -webkit-appearance: none;
+  margin-top: 6px;
 }
 
-.input-with-hint {
-  position: relative;
-}
-
-.range-hint {
-  position: absolute;
-  right: 14px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 12px;
-  color: #9ca3af;
-  pointer-events: none;
-}
-
-.hint {
-  display: block;
-  margin-top: 8px;
-  font-size: 12px;
-  color: #9ca3af;
+.slider-field::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #0ea5e9;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(14, 165, 233, 0.3);
 }
 
 .generate-btn {
   width: 100%;
-  padding: 16px 24px;
+  padding: 14px 20px;
   background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
   color: white;
   border: none;
   border-radius: 12px;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3);
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
 }
 
 .generate-btn:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(14, 165, 233, 0.4);
+  box-shadow: 0 6px 20px rgba(14, 165, 233, 0.4);
 }
 
 .generate-btn:active:not(:disabled) {
@@ -469,14 +455,14 @@ label {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 8px;
   position: relative;
   z-index: 1;
 }
 
 .btn-icon {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
 }
 
 .spinning {
@@ -484,9 +470,7 @@ label {
 }
 
 @keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
+  to { transform: rotate(360deg); }
 }
 
 .btn-shine {
@@ -495,12 +479,7 @@ label {
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.3),
-    transparent
-  );
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
   transition: left 0.5s ease;
 }
 
@@ -509,10 +488,10 @@ label {
 }
 
 .footer {
-  margin-top: 24px;
+  margin-top: 18px;
   text-align: center;
   color: #6b7280;
-  font-size: 13px;
+  font-size: 12px;
   position: relative;
   z-index: 1;
 }
@@ -521,36 +500,34 @@ label {
   margin: 0;
 }
 
-/* 响应式设计 */
+/* 滑动动画 */
+.slide-enter-active,
+.slide-leave-active {
+  transition: all 0.25s ease;
+  overflow: hidden;
+}
+
+.slide-enter-from,
+.slide-leave-to {
+  max-height: 0;
+  opacity: 0;
+  margin-bottom: 0;
+}
+
+.slide-enter-to,
+.slide-leave-from {
+  max-height: 80px;
+  opacity: 1;
+}
+
+/* 响应式 */
 @media (max-width: 480px) {
-  .app-container {
-    padding: 16px;
-  }
-
-  .card-header {
-    padding: 32px 24px 20px;
-  }
-
-  .card-body {
-    padding: 24px;
-  }
-
-  .form-row {
-    flex-direction: column;
-  }
-
-  h1 {
-    font-size: 24px;
-  }
-
-  .icon-wrapper {
-    width: 56px;
-    height: 56px;
-  }
-
-  .dice-icon {
-    width: 28px;
-    height: 28px;
-  }
+  .app-container { padding: 12px; }
+  .card-header { padding: 24px 20px 16px; }
+  .card-body { padding: 16px; }
+  h1 { font-size: 22px; }
+  .icon-wrapper { width: 48px; height: 48px; }
+  .dice-icon { width: 24px; height: 24px; }
+  .advanced-row { flex-wrap: wrap; }
 }
 </style>
