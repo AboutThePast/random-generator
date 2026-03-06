@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import { generateMultipleGroups, formatToTxt, downloadTxt } from './utils/randomGenerator'
 
-const baseValuesInput = ref('19.368,18.292,19.375,18.291')
+const baseValuesInput = ref('19.368,18.292')
 const countPerGroup = ref(30)
 const isGenerating = ref(false)
 
@@ -48,7 +48,7 @@ function handleGenerate() {
         id="baseValues"
         v-model="baseValuesInput"
         type="text"
-        placeholder="例如：19.368,18.292,19.375,18.291"
+        placeholder="例如：19.368,18.292"
       />
     </div>
 
